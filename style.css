@@ -3,10 +3,6 @@ body {
     font-family: 'Fredoka One', cursive; 
      min-height: 100vh; height: auto;  overflow: hidden; 
 }
-.container-fluid {
-    margin-top:20px; /* Tambahkan jarak manual sesuai keinginan */
-    padding-bottom: 20px;
-}
 .q-box {
     background: #f8f9fa;
     min-height: 100px;
