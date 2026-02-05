@@ -131,38 +131,42 @@ function check(p, input, kunci) {
     }
 }
 function startTimer(p) {
-    let sec = 10; // Kamu bisa ubah jadi 15 jika soal matematika dirasa sulit
+    let sec = 10; 
     const el = document.getElementById(p === 'P1' ? 't1' : 't2');
     
-    // Bersihkan timer sebelumnya agar tidak tumpang tindih
+    // 1. Bersihkan timer lama agar tidak ada dua timer berjalan bareng
     if (p === 'P1') clearInterval(timer1); else clearInterval(timer2);
     
+    // Reset tampilan awal timer
+    if(el) el.innerText = sec + "s";
+
     const task = setInterval(() => {
         sec--; 
         if(el) el.innerText = sec + "s";
         
         if (sec <= 0) { 
-            clearInterval(task); 
+            clearInterval(task); // Stop timer ini
             
-            // Tambahkan hitungan soal untuk pemain yang kehabisan waktu
+            // 2. Tambah hitungan soal pemain yang kehabisan waktu
             if (p === 'P1') {
                 solvedP1++;
-                isProcessingP1 = false; // Buka gembok
+                isProcessingP1 = false; // Buka kunci agar soal baru bisa diklik
             } else {
                 solvedP2++;
-                isProcessingP2 = false; // Buka gembok
+                isProcessingP2 = false; // Buka kunci agar soal baru bisa diklik
             }
 
-            // Cek apakah game berakhir atau lanjut ke soal berikutnya
+            // 3. Cek apakah masih ada soal tersisa
             if (solvedP1 >= totalSoal && solvedP2 >= totalSoal) {
                 finish();
             } else {
+                // Pindah ke soal berikutnya secara otomatis
                 newSoal(p); 
             }
         }
     }, 1000);
 
-    // Simpan id interval ke variabel global
+    // Simpan ID interval ke variabel global agar bisa di-stop saat jawaban diklik
     if (p === 'P1') timer1 = task; else timer2 = task;
 }
 function finish() {
