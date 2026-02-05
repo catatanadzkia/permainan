@@ -30,7 +30,7 @@ body {
 
 /* Memperbesar Teks No Soal */
 .no-soal {
-    font-size: 1.2rem;
+    font-size: 0.8rem;
     margin-bottom: 10px;
     color: #636e72;
     text-transform: uppercase;
@@ -38,7 +38,7 @@ body {
 }
 /* Header Area */
 .arena-header {
-    height: 180px; background: #55efc4;
+    height: 100px; background: #55efc4;
     border-bottom: 8px solid #00b894;
     display: flex; align-items: center; justify-content: center;
     position: relative;
@@ -51,7 +51,7 @@ body {
 
 /* Karakter & Animasi */
 .character {
-    font-size: 70px;
+    font-size: 40px;
     transition: transform 0.2s ease-out; /* Transisi halus */
     display: inline-block;
     z-index: 5;
