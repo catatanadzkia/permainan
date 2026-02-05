@@ -36,18 +36,16 @@ async function fetchDataSoal() {
     try {
         const response = await fetch(`${API_URL}?id=${idKelas}&sheet=${namaMapel}`);
         const data = await response.json();
+        
+        // Filter data yang tidak kosong
         let dataValid = data.filter(r => r[1] && r[2]);
 
-        // KOCOK UNTUK P1
+        // LANGSUNG JADI: Buat 2 antrean soal yang diacak terpisah
         soalP1 = [...dataValid].sort(() => Math.random() - 0.5);
-        
-        // KOCOK ULANG UNTUK P2 (Supaya urutannya beda dengan P1)
         soalP2 = [...dataValid].sort(() => Math.random() - 0.5);
 
         totalSoal = dataValid.length;
-        solvedP1 = 0;
-        solvedP2 = 0;
-
+        
         document.getElementById('loading-overlay').style.display = 'none';
         newSoal('P1'); 
         newSoal('P2');
@@ -62,10 +60,9 @@ async function fetchDataSoal() {
 // ... Sisa fungsi check(), newSoal(), startTimer() tetap sama seperti sebelumnya ...
 
 function newSoal(p) {
-    const currentIndex = (p === 'P1' ? solvedP1 : solvedP2);
-    const antreanSoal = (p === 'P1' ? soalP1 : soalP2); // Pilih antrean sesuai pemain
-    
-    if (p === 'P1') isProcessingP1 = false; else isProcessingP2 = false;
+    // Tentukan pemain mana, ambil antrean mana
+    const s = (p === 'P1') ? soalP1[solvedP1] : soalP2[solvedP2];
+    const currentIndex = (p === 'P1') ? solvedP1 : solvedP2;
 
     if (currentIndex >= totalSoal) {
         document.getElementById(p === 'P1' ? 'opt1' : 'opt2').innerHTML = "<h5>SELESAI!</h5>";
@@ -73,27 +70,20 @@ function newSoal(p) {
         return;
     }
 
-    const s = antreanSoal[currentIndex]; // Ambil dari antrean yang berbeda
+    // Acak jawaban (biar kuncinya nggak di situ-situ terus)
+    let opts = [s[2], s[3], s[4], s[5]].filter(x => x).sort(() => Math.random() - 0.5);
     
-    // Acak pilihan jawaban (A, B, C, D)
-    let pilihan = [s[2], s[3], s[4], s[5]].filter(x => x).sort(() => Math.random() - 0.5);
-    
-    document.getElementById(p === 'P1' ? 'no1' : 'no2').innerText = `Soal ${currentIndex + 1}`;
+    document.getElementById(p === 'P1' ? 'no1' : 'no2').innerText = `Soal #${currentIndex + 1}`;
     document.getElementById(p === 'P1' ? 'q1' : 'q2').innerText = s[1];
     
     const container = document.getElementById(p === 'P1' ? 'opt1' : 'opt2');
     container.innerHTML = '';
     
-    pilihan.forEach(txt => {
+    opts.forEach(txt => {
         const btn = document.createElement('button');
         btn.className = `btn btn-lg btn-outline-${p === 'P1' ? 'primary' : 'warning'} mb-2`;
         btn.innerText = txt;
-        btn.onclick = () => {
-            if (p === 'P1' && isProcessingP1) return;
-            if (p === 'P2' && isProcessingP2) return;
-            // Gunakan s[2] sebagai kunci jawaban asli dari baris tersebut
-            check(p, txt.toString().toLowerCase().trim(), s[2].toString().toLowerCase().trim());
-        };
+        btn.onclick = () => check(p, txt.toString().toLowerCase().trim(), s[2].toString().toLowerCase().trim());
         container.appendChild(btn);
     });
     startTimer(p);
