@@ -39,12 +39,15 @@ async function fetchDataSoal() {
         if (data.error) throw new Error(data.error);
 
         // Filter data valid
-        soal = data.filter(r => r[1] && r[2]);
+        let dataValid = data.filter(r => r[1] && r[2]);
+        
+        // --- FITUR ACAK SOAL ---
+        // Kita acak urutan soalnya di sini sebelum disimpan ke variabel global
+        soal = dataValid.sort(() => Math.random() - 0.5);
+        
         totalSoal = soal.length;
 
-        // TAHAP 3: Masuk Game
         document.getElementById('loading-overlay').style.display = 'none';
-        
         
         newSoal('P1'); 
         newSoal('P2');
@@ -61,7 +64,6 @@ async function fetchDataSoal() {
 function newSoal(p) {
     const currentSolved = (p === 'P1' ? solvedP1 : solvedP2);
     
-    // Reset status penguncian klik untuk soal baru
     if (p === 'P1') isProcessingP1 = false; else isProcessingP2 = false;
 
     if (currentSolved >= totalSoal) {
@@ -69,10 +71,14 @@ function newSoal(p) {
         return;
     }
 
+    // Mengambil soal yang sudah diacak urutannya
     const s = soal[currentSolved];
+    
+    // Mengacak urutan tombol jawaban (A, B, C, D) agar tidak selalu di posisi yang sama
     const opts = [s[2], s[3], s[4], s[5]].filter(x => x).sort(() => Math.random() - 0.5);
     
-    document.getElementById(p === 'P1' ? 'no1' : 'no2').innerText = `Soal #${currentSolved + 1}`;
+    // Tampilkan nomor soal asli dari kolom A (s[0]) agar guru tahu itu soal nomor berapa di spreadsheet
+    document.getElementById(p === 'P1' ? 'no1' : 'no2').innerText = `Pertanyaan Ke-${currentSolved + 1} (Asal Soal #${s[0]})`;
     document.getElementById(p === 'P1' ? 'q1' : 'q2').innerText = s[1];
     
     const container = document.getElementById(p === 'P1' ? 'opt1' : 'opt2');
