@@ -21,10 +21,10 @@ body {
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     
     /* PENGATURAN FONT BESAR */
-    font-size: 1.4rem; /* Ukuran font diperbesar signifikan */
+    font-size: 0.8rem; /* Ukuran font diperbesar signifikan */
     font-weight: bold;
     color: #2d3436;
-    line-height: 1.4;
+    line-height: 1;
     box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
 }
 
@@ -38,10 +38,10 @@ body {
 }
 /* Header Area */
 .arena-header {
-    height: 100px; background: #55efc4;
+    height: 90px; background: #55efc4;
     border-bottom: 8px solid #00b894;
     display: flex; align-items: center; justify-content: center;
-    position: relative;
+    position: fixed;
 }
 
 .battle-area {
