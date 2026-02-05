@@ -38,14 +38,19 @@ async function fetchDataSoal() {
 
         if (data.error) throw new Error(data.error);
 
-        // Filter data valid
+        // 1. Filter baris yang valid
         let dataValid = data.filter(r => r[1] && r[2]);
+
+        // 2. ACAK URUTAN SOAL (Fisher-Yates Shuffle)
+        for (let i = dataValid.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [dataValid[i], dataValid[j]] = [dataValid[j], dataValid[i]];
+        }
         
-        // --- FITUR ACAK SOAL ---
-        // Kita acak urutan soalnya di sini sebelum disimpan ke variabel global
-        soal = dataValid.sort(() => Math.random() - 0.5);
-        
+        soal = dataValid; 
         totalSoal = soal.length;
+        solvedP1 = 0; 
+        solvedP2 = 0;
 
         document.getElementById('loading-overlay').style.display = 'none';
         
@@ -62,37 +67,37 @@ async function fetchDataSoal() {
 // ... Sisa fungsi check(), newSoal(), startTimer() tetap sama seperti sebelumnya ...
 
 function newSoal(p) {
-    const currentSolved = (p === 'P1' ? solvedP1 : solvedP2);
+    const currentIndex = (p === 'P1' ? solvedP1 : solvedP2);
     
     if (p === 'P1') isProcessingP1 = false; else isProcessingP2 = false;
 
-    if (currentSolved >= totalSoal) {
+    if (currentIndex >= totalSoal) {
+        document.getElementById(p === 'P1' ? 'opt1' : 'opt2').innerHTML = "<h5 class='text-white'>SELESAI!</h5>";
         if (solvedP1 >= totalSoal && solvedP2 >= totalSoal) finish();
         return;
     }
 
-    // Mengambil soal yang sudah diacak urutannya
-    const s = soal[currentSolved];
+    const s = soal[currentIndex];
     
-    // Mengacak urutan tombol jawaban (A, B, C, D) agar tidak selalu di posisi yang sama
-    const opts = [s[2], s[3], s[4], s[5]].filter(x => x).sort(() => Math.random() - 0.5);
+    // --- ACAK PILIHAN JAWABAN ---
+    // Mengambil kolom C, D, E, F lalu diacak urutannya
+    let pilihan = [s[2], s[3], s[4], s[5]].filter(x => x !== "" && x !== null);
+    pilihan.sort(() => Math.random() - 0.5);
     
-    // Tampilkan nomor soal asli dari kolom A (s[0]) agar guru tahu itu soal nomor berapa di spreadsheet
-    document.getElementById(p === 'P1' ? 'no1' : 'no2').innerText = `Pertanyaan Ke-${currentSolved + 1} (Asal Soal #${s[0]})`;
+    // Tampilkan informasi progress
+    document.getElementById(p === 'P1' ? 'no1' : 'no2').innerText = `Soal ${currentIndex + 1} dari ${totalSoal}`;
     document.getElementById(p === 'P1' ? 'q1' : 'q2').innerText = s[1];
     
     const container = document.getElementById(p === 'P1' ? 'opt1' : 'opt2');
     container.innerHTML = '';
     
-    opts.forEach(txt => {
+    pilihan.forEach(txt => {
         const btn = document.createElement('button');
-        btn.className = `btn btn-lg btn-outline-${p === 'P1' ? 'primary' : 'warning'}`;
+        btn.className = `btn btn-lg btn-outline-${p === 'P1' ? 'primary' : 'warning'} mb-2`;
         btn.innerText = txt;
         btn.onclick = () => {
-            // CEK: Jika sudah selesai atau sedang proses ganti soal, jangan jalankan fungsi
             if (p === 'P1' && (isProcessingP1 || solvedP1 >= totalSoal)) return;
             if (p === 'P2' && (isProcessingP2 || solvedP2 >= totalSoal)) return;
-            
             check(p, txt.toString().toLowerCase().trim(), s[2].toString().toLowerCase().trim());
         };
         container.appendChild(btn);
