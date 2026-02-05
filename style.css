@@ -41,7 +41,7 @@ body {
     height: 90px; background: #55efc4;
     border-bottom: 8px solid #00b894;
     display: flex; align-items: center; justify-content: center;
-    position: fixed;
+    position: relative;
 }
 
 .battle-area {
