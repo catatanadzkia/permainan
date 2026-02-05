@@ -1,7 +1,8 @@
 body { 
     background: #a29bfe; 
     font-family: 'Fredoka One', cursive; 
-    height: 100vh; overflow: hidden; 
+    min-height: 100vh; overflow: hidden; 
+    height: auto;
 }
 .container-fluid {
     margin-top:50px; /* Tambahkan jarak manual sesuai keinginan */
@@ -38,7 +39,7 @@ body {
 }
 /* Header Area */
 .arena-header {
-    height: 180px; background: #55efc4;
+    height: 100px; background: #55efc4;
     border-bottom: 8px solid #00b894;
     display: flex; align-items: center; justify-content: center;
     position: relative;
