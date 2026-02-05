@@ -128,5 +128,3 @@ function finish() {
     alert(`GAME SELESAI!\nSkor: ${scoreP1} - ${scoreP2}\nPemenang: ${pemenang}`);
     location.reload();
 }
-
-window.onload = init;
