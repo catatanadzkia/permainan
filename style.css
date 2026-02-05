@@ -1,7 +1,7 @@
 body { 
     background: #a29bfe; 
     font-family: 'Fredoka One', cursive; 
-    height: 100vh; overflow: hidden; 
+     min-height: 100vh;height: auto;  overflow: hidden; 
 }
 .container-fluid {
     margin-top:50px; /* Tambahkan jarak manual sesuai keinginan */
