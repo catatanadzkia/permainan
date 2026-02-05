@@ -109,6 +109,7 @@ body {
 .dev-footer {
     position: relative;
     bottom: 0;
+    margin-top: 20px;
     left: 0;
     width: 100%;
     background: rgba(45, 52, 54, 0.9); /* Abu-abu gelap transparan */
