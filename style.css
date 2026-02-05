@@ -4,8 +4,8 @@ body {
      min-height: 100vh; height: auto;  overflow: hidden; 
 }
 .container-fluid {
-    margin-top:50px; /* Tambahkan jarak manual sesuai keinginan */
-    padding-bottom: 50px;
+    margin-top:20px; /* Tambahkan jarak manual sesuai keinginan */
+    padding-bottom: 20px;
 }
 .q-box {
     background: #f8f9fa;
