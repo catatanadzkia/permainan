@@ -90,34 +90,20 @@ function newSoal(p) {
 }
 
 function check(p, input, kunci) {
-    // Kunci tombol agar tidak bisa diklik berkali-kali (spam)
-    if (p === 'P1') isProcessingP1 = true; else isProcessingP2 = true;
+    // Matikan timer pemain ini segera setelah klik
+    if (p === 'P1') clearInterval(timer1); else clearInterval(timer2);
 
     if (input === kunci) {
         if (p === 'P1') scoreP1++; else scoreP2++;
-        
         pos += (p === 'P1' ? -4 : 4);
         document.getElementById('marker').style.left = pos + "%";
-
-        const char = document.getElementById(p === 'P1' ? 'char-p1' : 'char-p2');
-        const pullClass = p === 'P1' ? 'p1-pull-anim' : 'p2-pull-anim';
-        char.classList.add(pullClass);
-        setTimeout(() => char.classList.remove(pullClass), 300);
     }
 
-    // Tambah hitungan soal
+    // Update progres masing-masing
     if (p === 'P1') solvedP1++; else solvedP2++;
 
-    // Jika sudah mencapai batas soal, hapus pilihan agar tidak bisa diklik lagi
-    if ((p === 'P1' ? solvedP1 : solvedP2) >= totalSoal) {
-        document.getElementById(p === 'P1' ? 'opt1' : 'opt2').innerHTML = '<h5 class="text-success">SELESAI! Menunggu lawan...</h5>';
-    }
-
-    if (solvedP1 >= totalSoal && solvedP2 >= totalSoal) {
-        setTimeout(finish, 500); // Beri jeda sedikit agar tarikan terakhir terlihat
-    } else {
-        setTimeout(() => newSoal(p), 300);
-    }
+    // Lanjut ke soal berikutnya atau tampilkan status menunggu
+    setTimeout(() => newSoal(p), 300);
 }
 function startTimer(p) {
     let sec = 10; 
