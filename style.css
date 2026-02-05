@@ -11,7 +11,7 @@ body {
     background: #f8f9fa;
     min-height: 100px;
     padding: 30px;
-    margin-bottom: 40px; /* Jarak ke tombol pilihan */
+    margin-bottom: 20px; /* Jarak ke tombol pilihan */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -117,7 +117,6 @@ body {
     width: 100%;
     background: rgba(45, 52, 54, 0.9); /* Abu-abu gelap transparan */
     color: #dfe6e9;
-    padding: 10px 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 0.9rem;
     border-top: 3px solid #0984e3;
