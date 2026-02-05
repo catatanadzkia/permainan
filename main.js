@@ -1,6 +1,6 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbw_5OYmFFh23TBmrVdwCFX5x6CVkHBS9IFBx_2rtsJcSG6uP26zgn4JRJf5Sm9p3BXZtQ/exec";
 
-let pos = 50, soal = [], totalSoal = 0, solvedP1 = 0, solvedP2 = 0;
+let pos = 50, soal = [], totalSoal = 0, solvedP1 = 0, solvedP2 = 0, isProcessingP1 = false, isProcessingP2 = false;
 let scoreP1 = 0, scoreP2 = 0;
 let timer1, timer2, curA, curB;
 
@@ -57,16 +57,19 @@ async function fetchDataSoal() {
     }
 }
 // ... Sisa fungsi check(), newSoal(), startTimer() tetap sama seperti sebelumnya ...
+
 function newSoal(p) {
-    // Cek masing-masing pemain apakah sudah menghabiskan semua soal
     const currentSolved = (p === 'P1' ? solvedP1 : solvedP2);
+    
+    // Reset status penguncian klik untuk soal baru
+    if (p === 'P1') isProcessingP1 = false; else isProcessingP2 = false;
+
     if (currentSolved >= totalSoal) {
-        // Jika salah satu selesai, tunggu pemain lain atau langsung finish
         if (solvedP1 >= totalSoal && solvedP2 >= totalSoal) finish();
         return;
     }
 
-    const s = soal[currentSolved]; // Ambil soal urut berdasarkan progress pemain
+    const s = soal[currentSolved];
     const opts = [s[2], s[3], s[4], s[5]].filter(x => x).sort(() => Math.random() - 0.5);
     
     document.getElementById(p === 'P1' ? 'no1' : 'no2').innerText = `Soal #${currentSolved + 1}`;
@@ -79,29 +82,44 @@ function newSoal(p) {
         const btn = document.createElement('button');
         btn.className = `btn btn-lg btn-outline-${p === 'P1' ? 'primary' : 'warning'}`;
         btn.innerText = txt;
-        btn.onclick = () => check(p, txt.toString().toLowerCase().trim(), s[2].toString().toLowerCase().trim());
+        btn.onclick = () => {
+            // CEK: Jika sudah selesai atau sedang proses ganti soal, jangan jalankan fungsi
+            if (p === 'P1' && (isProcessingP1 || solvedP1 >= totalSoal)) return;
+            if (p === 'P2' && (isProcessingP2 || solvedP2 >= totalSoal)) return;
+            
+            check(p, txt.toString().toLowerCase().trim(), s[2].toString().toLowerCase().trim());
+        };
         container.appendChild(btn);
     });
     startTimer(p);
 }
 
 function check(p, input, kunci) {
+    // Kunci tombol agar tidak bisa diklik berkali-kali (spam)
+    if (p === 'P1') isProcessingP1 = true; else isProcessingP2 = true;
+
     if (input === kunci) {
         if (p === 'P1') scoreP1++; else scoreP2++;
+        
         pos += (p === 'P1' ? -4 : 4);
         document.getElementById('marker').style.left = pos + "%";
-        
+
         const char = document.getElementById(p === 'P1' ? 'char-p1' : 'char-p2');
         const pullClass = p === 'P1' ? 'p1-pull-anim' : 'p2-pull-anim';
         char.classList.add(pullClass);
         setTimeout(() => char.classList.remove(pullClass), 300);
     }
 
-    // Tambah hitungan soal per pemain
+    // Tambah hitungan soal
     if (p === 'P1') solvedP1++; else solvedP2++;
 
+    // Jika sudah mencapai batas soal, hapus pilihan agar tidak bisa diklik lagi
+    if ((p === 'P1' ? solvedP1 : solvedP2) >= totalSoal) {
+        document.getElementById(p === 'P1' ? 'opt1' : 'opt2').innerHTML = '<h5 class="text-success">SELESAI! Menunggu lawan...</h5>';
+    }
+
     if (solvedP1 >= totalSoal && solvedP2 >= totalSoal) {
-        finish();
+        setTimeout(finish, 500); // Beri jeda sedikit agar tarikan terakhir terlihat
     } else {
         setTimeout(() => newSoal(p), 300);
     }
