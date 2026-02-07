@@ -19,7 +19,11 @@
 
     <div id="setup-box" class="text-center p-5 bg-white rounded-5 shadow position-absolute top-50 start-50 translate-middle" style="width: 450px; display: none;">
         <h2 class="text-primary mb-4">Konfigurasi Game</h2>
-        
+        <div class="mb-3">
+            <label class="text-white">Masukkan ID Spreadsheet Anda:</label>
+            <input type="text" id="sheet-id-input" class="form-control" placeholder="Contoh: 1AbCdeFgHiJk..." />
+            <small class="text-warning">Tambahkan URL Google Sheets Anda atau biarkan kosong pilih menu di bawah.</small>
+        </div>
         <select id="kelas-select" class="form-select form-select-lg mb-3">
             <option value="" disabled selected>Pilih Kelas...</option>
             <option value="1Twr9LoMQwbfrvIsq3Eh2YIXw4tuq-EWXiRPtrJMsp_s">Kelas 1</option>
@@ -42,6 +46,8 @@
             <option value="ing">Bahasa Inggris</option>
             <option value="pjok">PJOK</option>
         </select>
+        <small class="text-warning">Mapel wajib di pilih.</small>
+         
 
         <button onclick="fetchDataSoal()" class="btn btn-primary btn-lg w-100 py-3 shadow-sm">MULAI GAME</button>
     </div>
@@ -116,7 +122,7 @@
         <button class="btn-restart" onclick="closeAlert()">KEMBALI KE MENU</button>
     </div>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <script src="main.js"></script>
 </body>
 </html>
