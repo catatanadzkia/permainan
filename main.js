@@ -84,7 +84,7 @@ async function fetchDataSoal() {
         newSoal('P2');
         
     } catch (e) {
-        showCustomAlert("NAMA SHEET", ` Gagal mengambil soal.\nGagal membaca Sheet "${namaMapel}" silakan tambahkan di googlesheet anda.`);
+        showCustomAlert("NAMA SHEET", ` Gagal mengambil soal.\nGagal membaca Sheet "${namaMapel}" \nTambahkan nama sheet "${namaMapel}" di Google Sheets Anda.`);
         // Kembalikan ke pilihan jika gagal
         
     }
