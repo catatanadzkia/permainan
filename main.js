@@ -5,6 +5,8 @@ window.onload = () => {
         document.getElementById('sheet-id-input').value = savedID;
     }
 
+    handleInputLogic();
+
     // 2. Animasi Loader awal
     setTimeout(() => {
         document.getElementById('loader').style.display = 'none';
@@ -240,4 +242,23 @@ function closeAlert() {
     document.getElementById('modal-alert').style.display = 'none';
     document.getElementById('loader').style.display = 'none';
     document.getElementById('setup-box').style.display = 'block';
+}
+function handleInputLogic() {
+    const sheetInput = document.getElementById('sheet-id-input');
+    const kelasSelect = document.getElementById('kelas-select');
+
+    if (sheetInput && kelasSelect) {
+        sheetInput.addEventListener('input', function() {
+            if (this.value.trim() !== "") {
+                // Jika URL diisi, matikan dropdown kelas
+                kelasSelect.disabled = true;
+                kelasSelect.style.opacity = "0.5";
+                kelasSelect.value = ""; // Reset pilihan agar tidak bentrok
+            } else {
+                // Jika URL kosong, aktifkan kembali dropdown
+                kelasSelect.disabled = false;
+                kelasSelect.style.opacity = "1";
+            }
+        });
+    }
 }
