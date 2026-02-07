@@ -36,26 +36,38 @@ async function fetchDataSoal() {
     try {
         const response = await fetch(`${API_URL}?id=${idKelas}&sheet=${namaMapel}`);
         const data = await response.json();
-        
-        // Filter data yang tidak kosong
         let dataValid = data.filter(r => r[1] && r[2]);
 
-        // LANGSUNG JADI: Buat 2 antrean soal yang diacak terpisah
-        soalP1 = [...dataValid].sort(() => Math.random() - 0.5);
-        soalP2 = [...dataValid].sort(() => Math.random() - 0.5);
+        if (dataValid.length === 0) {
+            showCustomAlert("SOAL KOSONG!", `Waduh, soal untuk ${namaMapel} belum diisi di Google Sheets.`);
+            return;
+        }
+
+        // KOCOK SEKALIGUS DI SINI (Fisher-Yates)
+        soalP1 = shuffle([...dataValid]);
+        soalP2 = shuffle([...dataValid]);
 
         totalSoal = dataValid.length;
-        
+        solvedP1 = 0; 
+        solvedP2 = 0;
+
         document.getElementById('loading-overlay').style.display = 'none';
         newSoal('P1'); 
         newSoal('P2');
         
     } catch (e) {
-        alert("Gagal memuat data! Periksa ID Spreadsheet atau Nama Sheet.");
+        showCustomAlert("Soal Kosong", "Silakan hubungi untuk input text");
         // Kembalikan ke pilihan jika gagal
-        document.getElementById('loader').style.display = 'none';
-        document.getElementById('setup-box').style.display = 'block';
+        
     }
+}
+// Fungsi pengocok murni (biar benar-benar acak)
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
 }
 // ... Sisa fungsi check(), newSoal(), startTimer() tetap sama seperti sebelumnya ...
 
@@ -97,6 +109,10 @@ function check(p, input, kunci) {
         if (p === 'P1') scoreP1++; else scoreP2++;
         pos += (p === 'P1' ? -4 : 4);
         document.getElementById('marker').style.left = pos + "%";
+        const char = document.getElementById(p === 'P1' ? 'char-p1' : 'char-p2');
+        const pullClass = p === 'P1' ? 'p1-pull-anim' : 'p2-pull-anim';
+        char.classList.add(pullClass);
+        setTimeout(() => char.classList.remove(pullClass), 300);
     }
 
     // Update progres masing-masing
@@ -145,8 +161,43 @@ function startTimer(p) {
     if (p === 'P1') timer1 = task; else timer2 = task;
 }
 function finish() {
-    clearInterval(timer1); clearInterval(timer2);
-    const pemenang = scoreP1 > scoreP2 ? "PLAYER 1" : (scoreP2 > scoreP1 ? "PLAYER 2" : "SERI");
-    alert(`GAME SELESAI!\nSkor: ${scoreP1} - ${scoreP2}\nPemenang: ${pemenang}`);
-    location.reload();
+    clearInterval(timer1); 
+    clearInterval(timer2);
+
+    const overlay = document.getElementById('custom-overlay');
+    const winnerDisplay = document.getElementById('winner-name');
+    const scoreDisplay = document.getElementById('final-score');
+
+    // Logika Pemenang
+    let pemenang;
+    if (scoreP1 > scoreP2) {
+        pemenang = "🎉 PLAYER 1 MENANG! 🎉";
+        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+    } else if (scoreP2 > scoreP1) {
+        pemenang = "🎉 PLAYER 2 MENANG! 🎉";
+        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+    } else {
+        pemenang = "🤝 HASIL SERI! 🤝";
+    }
+
+    // Tampilkan Data ke Modal
+    scoreDisplay.innerText = `${scoreP1} - ${scoreP2}`;
+    winnerDisplay.innerText = pemenang;
+
+    const btn = document.querySelector('.btn-restart');
+    btn.innerText = "MAIN LAGI 🎮";
+    btn.onclick = () => location.reload();
+    overlay.style.display = 'flex';
+}
+function showCustomAlert(title, message) {
+    document.getElementById('alert-title').innerText = title;
+    document.getElementById('alert-message').innerText = message;
+    document.getElementById('modal-alert').style.display = 'flex';
+}
+
+// 3. Fungsi Tutup Alert
+function closeAlert() {
+    document.getElementById('modal-alert').style.display = 'none';
+    document.getElementById('loader').style.display = 'none';
+    document.getElementById('setup-box').style.display = 'block';
 }
